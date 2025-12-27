@@ -49,9 +49,8 @@ The goal of this system is to **reduce manual workload**, improve customer shopp
 3️⃣ AI guides user through checkout  
 4️⃣ System extracts structured order details  
 5️⃣ User confirms payment  
-6️⃣ System updates transaction log  
-7️⃣ **Stock automatically reduced**
-8️⃣ Final confirmation sent to customer  
+6️⃣ **Stock automatically reduced**  
+7️⃣ Final confirmation sent to customer
 
 ---
 
