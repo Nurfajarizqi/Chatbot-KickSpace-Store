@@ -1,0 +1,1759 @@
+{
+  "name": "Chatbot_KickSpace",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        464
+      ],
+      "id": "db2c2c3e-13f4-41ad-b376-f6ab2317f9b2",
+      "name": "Telegram Trigger",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Chatbot KickSpace Store",
+        "height": 432,
+        "width": 1072,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        368
+      ],
+      "typeVersion": 1,
+      "id": "0ee2fdbc-ce0a-47cc-a9c5-5e2fffb97b32",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "=AI Agent Customer Service",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "45c20b81-e079-46df-9786-dedb20c7a93b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6005add4-49aa-4a6d-8966-60ddbd023413",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "AI Agent Konfirmasi Pesanan",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e32d5b12-8239-4e5d-82fb-a16eacde80e8",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "konfirmasi bayar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        512
+      ],
+      "id": "9fab14d1-3695-4594-ab41-3e467c1f6842",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1424,
+        -320
+      ],
+      "id": "95a41d32-7d80-4c7b-9b12-2454b39f8e66",
+      "name": "Send a text message",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Kamu adalah Customer Service resmi KickSpace, sebuah toko sepatu.\nTugasmu adalah menjawab semua pertanyaan customer dengan sangat sopan, ramah, jelas, dan profesional, seolah-olah kamu adalah karyawan toko berpengalaman.\n\nKamu WAJIB:\n1. Selalu menggunakan bahasa Indonesia yang sopan\n2. Selalu menyapa customer dengan ramah menggunakan nama customer\n3. Memberikan jawaban yang jelas, ringkas, dan membantu\n4. Menggunakan kata-kata seperti “silakan”, “kami bantu”, “terima kasih”, dan “mohon ditunggu”\n5. HANYA menggunakan data yang tersedia di Google Sheet\n6. Gunakan emote agar kesannya kamu sopan dan ceria\n\nKamu TIDAK BOLEH:\n1. Bersikap kasar, terlalu singkat, atau tidak sopan\n2. Mengarang data produk\n3. Menyebutkan produk yang tidak ada di Google Sheet\n\n---\n\n📌 ATURAN KHUSUS UNTUK MENJAWAB PERTANYAAN STOK:\n\nJika customer menanyakan **stok sepatu yang tersedia**, kamu WAJIB:\n\n1. Mengelompokkan produk berdasarkan **Brand**\n2. Menampilkan nama brand sebagai judul dengan format emoji:\n   👟Nama Brand\n3. Di bawah setiap brand, tampilkan daftar produk dengan format:\n   - Nama Produk ukuran X, Y, Z\n4. Hanya tampilkan produk yang **stoknya tersedia (Stock > 0)**\n5. Jangan menampilkan harga kecuali diminta\n6. Jangan mengulang nama brand di judul dan di item secara berlebihan\n7. Jika suatu brand tidak memiliki stok, JANGAN ditampilkan\n\n📌 FORMAT OUTPUT WAJIB (IKUTI PERSIS):\n\n👟Nike\n- Nike Air Force 1 Low ukuran 40, 41, 42\n- Nike Air Jordan 1 High ukuran 41, 43\n\n👟Adidas\n- Adidas Samba OG ukuran 40, 42\n- Adidas Superstar ukuran 41, 43\n\n---\n\n📌 Jika TIDAK ADA produk yang tersedia:\nSampaikan dengan sopan bahwa stok sedang kosong dan tawarkan bantuan produk lain.\n\n---\n\nData produk disimpan dalam Google Sheet dengan kolom berikut:\n- Product ID\n- Produk\n- Brand\n- Ukuran\n- Harga\n- Stok\n\nGunakan data dari Google Sheet saja untuk menjawab pertanyaan customer.\n\nJika Customer meminta rekomendasi, berikan rekomendasi sepatu dengan stok <5 (jangan sebutkan stok <5 ke customer, coba diubah dengan kalimat seperti \"Berikut rekomendasi sepatu yang banyak dibeli di Toko Kami\").\n\nChat customer:\n{{ $json.output }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -320
+      ],
+      "id": "f6b1b7c0-fe55-4891-8d00-c5818716a00d",
+      "name": "Customer Service"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Kamu adalah Customer Service resmi KickSpace, sebuah toko sepatu.\nKamu akan melayani customer dengan sangat sopan, ramah, jelas, dan profesional, seolah-olah kamu adalah karyawan toko berpengalaman. \n\nKamu WAJIB:\n1. Selalu menggunakan bahasa Indonesia yang sopan\n2. Selalu menyapa customer dengan ramah menggunakan nama customer\n3. Memberikan jawaban yang jelas, ringkas, dan membantu\n4. Menggunakan kata-kata seperti “silakan”, “kami bantu”, “terima kasih”, dan “mohon ditunggu”\n5. HANYA menggunakan data yang tersedia di Google Sheet\n6. Gunakan emote agar kesannya kamu sopan dan ceria\n\nKamu TIDAK BOLEH:\n1. Bersikap kasar, terlalu singkat, atau tidak sopan\n2. Mengarang data produk\n3. Menyebutkan produk yang tidak ada di Google Sheet\n\n---\n\n📌 Jika TIDAK ADA produk yang tersedia:\nSampaikan dengan sopan bahwa stok sedang kosong dan tawarkan bantuan produk lain.\n\n---\n\nData produk disimpan dalam Google Sheet dengan kolom berikut:\n- Product ID\n- Produk\n- Brand\n- Ukuran\n- Harga\n- Stok\n\nGunakan data dari Google Sheet saja untuk menjawab chat customer.\n\nTugasmu adalah memastikan dan melakukan konfirmasi ke customer apakah customer benar akan membeli produk yang dipilih, pastikan juga bahwa produk yang akan dibeli customer ada stoknya di Google Sheet. Format text konfirmasi :\n\nHalo (nama),\n\nMohon konfirmasi pesanan Anda:\n\nNama:\nOrder ID: (isi dengan Product ID)\nProduk:\nUkuran:\nHarga:\nQuantity:\nTotal: (isi dengan Harga*Quantity)\n\nBalas:\nkonfirmasi bayar → jika sudah benar\ncancel → jika perlu diperbaiki\n\nChat customer:{{ $json.output }}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        992,
+        208
+      ],
+      "id": "fd8dee98-8f3f-46be-9eb2-60c0443e032e",
+      "name": "Konfirmasi Pesanan"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Kamu adalah AI Agent Pintar. Tugasmu adalah membuat invoice seperti admin professional. \n\nFormat invoice:\n🧾 INVOICE PEMESANAN\n\nNama:{{ $json.Nama }}\nOrder ID: {{ $json['Order ID'] }}\nProduk:{{ $json.Produk }}\nUkuran:{{ $json.Ukuran }}\nHarga:Rp {{ $json.Harga }}\nQuantity:{{ $json.Quantity }}\nTotal: Rp {{ $json.Total }}\n\nSilakan transfer ke:\nBCA 1234566789 a.n KickSpace\n\nSilahkan kirim bukti pembayaran (foto).\n\nTerima Kasih😊",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1168,
+        640
+      ],
+      "id": "53614caf-abeb-4c14-bb17-959709b17b65",
+      "name": "Kirim Invoice ke Customer"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1719717257,
+          "mode": "list",
+          "cachedResultName": "Order",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "PAID",
+            "Order ID": "={{ $json['Order ID'] }}"
+          },
+          "matchingColumns": [
+            "Order ID"
+          ],
+          "schema": [
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nama",
+              "displayName": "Nama",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Produk",
+              "displayName": "Produk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Ukuran",
+              "displayName": "Ukuran",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Harga",
+              "displayName": "Harga",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Total",
+              "displayName": "Total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2496,
+        1104
+      ],
+      "id": "fd5c7b69-c3df-4482-be45-d36721c30001",
+      "name": "Ubah Status Pending / Unpaid menjadi Paid",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Stok",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product ID": "={{ $json.order_id }}",
+            "Stock": "={{ $json.Stok }}"
+          },
+          "matchingColumns": [
+            "Product ID"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Brand",
+              "displayName": "Brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Size (EU)",
+              "displayName": "Size (EU)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Price (IDR)",
+              "displayName": "Price (IDR)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Stock",
+              "displayName": "Stock",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2624,
+        1312
+      ],
+      "id": "2dd3e589-542d-4475-9c9b-f50b0cc570b4",
+      "name": "Kurangi Stok",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Stok",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        -176
+      ],
+      "id": "25409d3e-1fe2-4272-9f31-ae6c2c86de3c",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Stok",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "filtersUI": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        352
+      ],
+      "id": "8faeb965-844d-40fa-9048-ee96d90f4127",
+      "name": "Get row(s) in sheet in Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Kamu adalah AI Agent pintar yang bertugas mengklasifikasikan MAKSUD CHAT TEKS dari customer.\n\n1. Apabila customer bertanya mengenai produk, stok, harga serta brand sepatu, maka kamu akan meneruskannya ke AI Agent Customer Service. Jika customer memberi salam dan bertanya-tanya, kamu juga akan meneruskannya ke AI Agent Customer Service.\n\n2. Apabila customer ingin membeli/memesan/checkout produk sepatu,maka kamu akan meneruskannya ke AI Agent Konfirmasi Pesanan.\n\n3. Apabila Customer memberikan pesan \"konfirmasi bayar\" maka kamu akan meneruskannya ke node Konfirmasi Bayar.\n\n\nJangan sampai kamu salah mengklasifikasikan maksud atau tujuan dari customer. Jangan kamu teruskan keempat jalurnya, hanya boleh 1 jalur saja yang meneruskan.\n\nFormat output yaitu teruskan chat dari customer serta teruskan nama customer juga agar digunakan pada AI Agent selanjutnya. Berikan juga keterangan bahwa kamu meneruskannya ke node (tujuan) mana.\n\nchat customer:{{ $json.message.text }}\nnama customer:{{ $json.message.chat.first_name }}\n\nApabila customer melakukan \"konfirmasi bayar\", maka kamu akan memberikan output dalam bentuk JSON dengan isinya sesuai dengan identitas customer:\n\nNama:\nOrder ID: \nProduk:\nUkuran:\nHarga:\nQuantity:\nTotal:\n\nuntuk mengisi data tersebut:{{ $json.result.text }}",
+        "options": {
+          "passthroughBinaryImages": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        96,
+        416
+      ],
+      "id": "c2458336-0c4d-485f-a28b-2f9d0447d905",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.update_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        624
+      ],
+      "id": "14824eec-2d8e-4113-b19e-b4e5c9fb54e1",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.output }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1072,
+        -112
+      ],
+      "id": "01cea6a3-f64e-4728-8d7b-6dd87a56df54",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.output }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1088,
+        432
+      ],
+      "id": "8678193b-184b-4bb7-ab7e-97eab02a073f",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[$json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        1184
+      ],
+      "id": "9eaf7149-af33-4da8-9dc7-05580ec2831b",
+      "name": "Get Image",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Customer Service Bot",
+        "height": 432,
+        "width": 1008,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "2d54b7ad-1cee-491c-8c70-1c32b0383713",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Konfirmasi Pesanan\n",
+        "height": 432,
+        "width": 1264,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        128
+      ],
+      "typeVersion": 1,
+      "id": "a6ce732d-69ba-484a-a616-ceda9536b5d4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Buat Invoice\n",
+        "height": 400,
+        "width": 1056,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "9f5bd16b-2b42-43b0-89a8-ff0856a17125",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Validasi Pembayaran",
+        "height": 576,
+        "width": 2496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        1056
+      ],
+      "typeVersion": 1,
+      "id": "89d2fb14-8800-42e0-8003-8abda6659b0c",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items;\nconst latestOrder = rows[rows.length - 1];\n\nreturn [latestOrder];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        1104
+      ],
+      "id": "0dfb35b8-c13d-4157-b76e-a0b591ce5d73",
+      "name": "Ambil Row Terbaru"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2272,
+        1200
+      ],
+      "id": "27affd34-b1e1-42c8-ba07-aff606dfe800",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "340a5808-6670-4d1c-9d7d-0ed476cbcc24",
+              "leftValue": "={{ $json.message.photo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -176,
+        464
+      ],
+      "id": "d187e4bb-1820-45a4-b568-6264b16cc9e5",
+      "name": "Text / Photo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.output;\n\n// helper function\nconst getValue = (label) => {\n  const regex = new RegExp(`${label}:\\\\s*(.*)`);\n  const match = text.match(regex);\n  return match ? match[1].trim() : null;\n};\n\nreturn [{\n  json: {\n    nama: getValue(\"Nama\"),\n    order_id: getValue(\"Order ID\"),\n    produk: getValue(\"Produk\"),\n    ukuran: Number(getValue(\"Ukuran\")),\n    harga: Number(getValue(\"Harga\")?.replace(/\\./g, \"\").replace(\" IDR\", \"\")),\n    quantity: Number(getValue(\"Quantity\")),\n    total: Number(getValue(\"Total\")?.replace(/\\./g, \"\").replace(\" IDR\", \"\"))\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        208
+      ],
+      "id": "e4056424-f72b-4c10-82bd-923f1bb36fa9",
+      "name": "Get Value JSON"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1719717257,
+          "mode": "list",
+          "cachedResultName": "Order",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Order ID": "={{ $json.order_id }}",
+            "Nama": "={{ $json.nama }}",
+            "Ukuran": "={{ $json.ukuran }}",
+            "Produk": "={{ $json.produk }}",
+            "Harga": "={{ $json.harga }}",
+            "Quantity": "={{ $json.quantity }}",
+            "Total": "={{ $json.total }}",
+            "Status": "UNPAID"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nama",
+              "displayName": "Nama",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Produk",
+              "displayName": "Produk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ukuran",
+              "displayName": "Ukuran",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Harga",
+              "displayName": "Harga",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total",
+              "displayName": "Total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1536,
+        208
+      ],
+      "id": "aba670de-b04a-484c-979a-3b9435e9bf54",
+      "name": "Tambahkan Pesanan di Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $('Konfirmasi Pesanan').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1744,
+        208
+      ],
+      "id": "4dcc1118-4647-4882-9d22-58629e79bb47",
+      "name": "Kirim Konfirmasi Pesanan",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1719717257,
+          "mode": "list",
+          "cachedResultName": "Order",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        720
+      ],
+      "id": "2cac7f62-340b-47b6-bf9f-a3ccf416943e",
+      "name": "Ambil Data Pesanan",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// semua rows dari google sheet\nconst rows = items;\n\n// ambil row terakhir\nconst latestRow = rows[rows.length - 1];\n\nreturn [latestRow];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        720
+      ],
+      "id": "0d4c0756-1615-47cc-9c54-7dfc41c64e1b",
+      "name": "Buat dalam JSON"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        720
+      ],
+      "id": "d2f20e87-cc91-44d8-9ae3-6652ec79e08c",
+      "name": "Kirim Invoice",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a98c2c8d-de03-4d3d-9e9c-75117a415b2d",
+              "leftValue": "={{ $json['0'].content[0].text }}",
+              "rightValue": "\"is_valid\": true",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1600,
+        1184
+      ],
+      "id": "ed2c5091-415d-4c11-88b1-0ca1b48b9c51",
+      "name": "Cek Pembayaran Valid atau Tidak"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "❌ Pembayaran Belum Dapat Dikonfirmasi\n\nTerima kasih telah mengirimkan bukti pembayaran.  \nNamun, setelah kami lakukan pengecekan, bukti pembayaran tersebut **belum dapat kami verifikasi**.\n\nMohon pastikan:\n- Bukti transfer jelas dan tidak terpotong\n- Nominal dan tujuan rekening sesuai\n\nSilakan kirim ulang bukti pembayaran yang valid agar kami dapat segera memproses pesanan Anda.\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        1456
+      ],
+      "id": "65bf7085-b4af-41d5-a6b9-4e030a39a7db",
+      "name": "Kirim Pesan bahwa Pembayaran Tidak Valid",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1719717257,
+          "mode": "list",
+          "cachedResultName": "Order",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1840,
+        1104
+      ],
+      "id": "743ac0eb-4db3-45dc-a07a-e3fe821e9a4b",
+      "name": "Ambil Data Pesanan Customer",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HgpU2Sq6SpS1I1rs0E9lUVu1g8MtwiLLu0OVCIZDT6E",
+          "mode": "list",
+          "cachedResultName": "KickSpace Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Stok",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Product ID",
+              "lookupValue": "={{ $json['Order ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2096,
+        1344
+      ],
+      "id": "fcd5e166-c5a5-4fc6-b5fe-8f79140ec6ea",
+      "name": "Ambil Data Stok",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const order = $input.all()[0].json;\nconst product = $input.all()[1].json;\n\nreturn [{\n  json: {\n    order_id: order[\"Order ID\"],\n    row_number: product.row_number,\n    Stok: Number(product.Stok) - Number(order.Quantity)\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        1312
+      ],
+      "id": "19f15e99-4110-41ac-894a-07f2bf909221",
+      "name": "Kurangi Stok JSON"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ Pembayaran Berhasil\n \nTerima kasih, pembayaran untuk pesanan Anda telah kami terima dan berhasil diverifikasi.\n\n📦 Pesanan Anda sedang kami proses dan akan segera kami siapkan.  \nJika ada pertanyaan lebih lanjut, silakan hubungi kami kapan saja.\n\nTerima kasih sudah berbelanja di **KickSpace** 👟✨\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2928,
+        1184
+      ],
+      "id": "496e033c-703e-49b8-883f-b73844de4770",
+      "name": "Pembayaran Terkonfirmasi",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        592
+      ],
+      "id": "c0309b31-35d8-428f-b5a5-f19ff236f8d8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        -144
+      ],
+      "id": "0a7f9fb9-41ed-4021-a1d4-0387b99d47ea",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        384
+      ],
+      "id": "124ae678-839d-4d41-aeaa-83af19552bff",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1168,
+        816
+      ],
+      "id": "acdfb553-e244-4ac5-b1d7-fefabd98419a",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "=Kamu adalah AI yang bertugas memverifikasi bukti pembayaran.\n\nAnalisis gambar bukti transfer dan jawab dalam format JSON saja:\n\n{\n  \"is_valid\": true/false,\n  \"tujuan\": \"\",\n  \"pengirim\": \"\",\n  \"nominal\": \"\",\n  \"alasan\": \"\"\n}\n\nKriteria VALID:\n1. Nama penerima: KickSpace\n2. Ada nominal transfer yang jelas\n3. Rekening Tujuan : 123456789\n3. Gambar terlihat sebagai bukti transfer (bukan foto lain)\n\nJika salah satu tidak terpenuhi → is_valid = false",
+        "inputType": "base64",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        1184
+      ],
+      "id": "58386773-9267-4411-bbf6-cb858d58e7bd",
+      "name": "Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1232,
+        1184
+      ],
+      "id": "691cfffe-f96e-40d3-9ef1-f2271172b1b8",
+      "name": "Wait",
+      "webhookId": "REDACTED_FOR_PUBLIC_REPO"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "empty"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2768,
+        1184
+      ],
+      "id": "8eb13ccb-d429-4ddd-a0aa-c51c7aa9427b",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ef368625-a300-46d5-8fee-1edb98b64574",
+              "leftValue": "={{ $json.result.file_path }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1008,
+        1248
+      ],
+      "id": "e70d8edb-df0a-423f-b1f5-009e2a5b0636",
+      "name": "Cek Gambar atau Bukan"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text / Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Customer Service",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Konfirmasi Pesanan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ambil Data Pesanan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Service": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Konfirmasi Pesanan": {
+      "main": [
+        [
+          {
+            "node": "Get Value JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Invoice ke Customer": {
+      "main": [
+        [
+          {
+            "node": "Kirim Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ubah Status Pending / Unpaid menjadi Paid": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kurangi Stok": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Customer Service",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Konfirmasi Pesanan",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Customer Service",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Konfirmasi Pesanan",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image": {
+      "main": [
+        [
+          {
+            "node": "Cek Gambar atau Bukan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Row Terbaru": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ambil Data Stok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Ubah Status Pending / Unpaid menjadi Paid",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Kurangi Stok JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text / Photo": {
+      "main": [
+        [
+          {
+            "node": "Get Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Value JSON": {
+      "main": [
+        [
+          {
+            "node": "Tambahkan Pesanan di Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tambahkan Pesanan di Sheet": {
+      "main": [
+        [
+          {
+            "node": "Kirim Konfirmasi Pesanan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kirim Konfirmasi Pesanan": {
+      "main": [
+        []
+      ]
+    },
+    "Ambil Data Pesanan": {
+      "main": [
+        [
+          {
+            "node": "Buat dalam JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buat dalam JSON": {
+      "main": [
+        [
+          {
+            "node": "Kirim Invoice ke Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Pembayaran Valid atau Tidak": {
+      "main": [
+        [
+          {
+            "node": "Ambil Data Pesanan Customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kirim Pesan bahwa Pembayaran Tidak Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Data Pesanan Customer": {
+      "main": [
+        [
+          {
+            "node": "Ambil Row Terbaru",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ambil Data Stok": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Kurangi Stok JSON": {
+      "main": [
+        [
+          {
+            "node": "Kurangi Stok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Customer Service",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Konfirmasi Pesanan",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Kirim Invoice ke Customer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Cek Pembayaran Valid atau Tidak",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Pembayaran Terkonfirmasi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cek Gambar atau Bukan": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kirim Pesan bahwa Pembayaran Tidak Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aac69758-8449-4ddc-8c8e-427430bda42b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "REDACTED_INSTANCE"
+  },
+  "id": "gugYOtYkpePiQm5s",
+  "tags": []
+}
