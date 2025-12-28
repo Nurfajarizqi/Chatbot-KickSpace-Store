@@ -79,16 +79,6 @@ Stores structured data for:
 
 ---
 
-## 🧠 Why This Is a Multi-Agent AI System?
-
-Because:
-- Each AI agent has a dedicated purpose
-- System performs **decision-based automation**, not static rules
-- n8n manages automation flow
-- LLM handles comprehension, reasoning, and decision logic
-
----
-
 ## ⚠️ Important Note
 > Payment confirmation and proof of transfer used in this project are **DEMO ONLY**  
 > No real financial transactions are processed.
