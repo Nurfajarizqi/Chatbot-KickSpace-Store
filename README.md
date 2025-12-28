@@ -27,6 +27,8 @@ The chatbot acts as a **virtual store assistant** capable of handling customer i
 
 The goal of this system is to **reduce manual workload**, improve customer shopping experience, ensure inventory accuracy, and provide seamless automation in e-commerce operations.
 
+<img width="1002" height="496" alt="Workflow" src="https://github.com/user-attachments/assets/c73d8cc4-62ad-4776-998f-37c22e7747eb" />
+
 ---
 
 ## 🎯 Key Capabilities
